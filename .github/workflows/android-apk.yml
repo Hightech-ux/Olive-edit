@@ -1,0 +1,38 @@
+name: Build OLIVE EDIT APK
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Get project
+        uses: actions/checkout@v4
+
+      - name: Install Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Install Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      - name: Prepare Android
+        run: flutter create . --platforms=android --org com.olivedit
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build APK
+        run: flutter build apk --release
+
+      - name: Save APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: OLIVE-EDIT-APK
+          path: build/app/outputs/flutter-apk/app-release.apk
